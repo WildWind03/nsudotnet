@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NumberGuesser
+namespace Chirikhin.Nsudotnet.NumberGuesser
 {
     class Program
     {
@@ -11,7 +11,7 @@ namespace NumberGuesser
         private const string AuthoName = "Alexander Chirikhin";
         private const string QuitString = "q";
 
-        static void Main()
+        public static void Main()
         {
             var startDateTime = DateTime.Now;
             Console.WriteLine("Please, type your name");
