@@ -2,7 +2,7 @@
 
 namespace Chirikhin.Nsudotnet.Enigma
 {
-    class ParserException : Exception
+    internal class ParserException : Exception
     {
         public ParserException(string str) : base(str)
         {

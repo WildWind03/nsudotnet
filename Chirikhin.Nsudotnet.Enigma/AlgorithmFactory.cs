@@ -54,9 +54,9 @@ namespace Chirikhin.Nsudotnet.Enigma
 
         private static byte[] GenarateByteArray(int length)
         {
-            byte[] byteArray = new byte[length];
+            var byteArray = new byte[length];
 
-            for (int k = 0; k < length; ++k)
+            for (var k = 0; k < length; ++k)
             {
                 byteArray[k] = (byte) Random.Next(0, 255);
             }

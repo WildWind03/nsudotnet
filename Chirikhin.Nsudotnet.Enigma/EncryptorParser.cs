@@ -6,12 +6,13 @@ namespace Chirikhin.Nsudotnet.Enigma
 {
     public static class EncryptorParser
     {
-        private static readonly int PROPER_COUNT_OF_ARGUMENTS = 4;
+        private const int ProperCountOfArguments = 4;
+
         public static EncryptorConfiguartion GetConfiguration(IReadOnlyList<string> args)
         {
-            if (null == args || args.Count != PROPER_COUNT_OF_ARGUMENTS)
+            if (null == args || args.Count != ProperCountOfArguments)
             {
-                throw new ArgumentException(Concat("args can not be null and must be equal to ", PROPER_COUNT_OF_ARGUMENTS));
+                throw new ArgumentException(Concat("args can not be null and must be equal to ", ProperCountOfArguments));
             }
 
             var inputFilename = args[1];
