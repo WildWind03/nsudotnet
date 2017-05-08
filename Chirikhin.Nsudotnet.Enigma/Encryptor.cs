@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
+using static System.String;
 
 namespace Chirikhin.Nsudotnet.Enigma
 {
@@ -9,22 +9,21 @@ namespace Chirikhin.Nsudotnet.Enigma
     {
         public static void Encrypt(EncryptorConfiguartion encryptorConfiguartion)
         {
-            byte[] textBytes = File.ReadAllBytes(encryptorConfiguartion.InputFilename);
+            var textBytes = File.ReadAllBytes(encryptorConfiguartion.InputFilename);
 
-            SymmetricAlgorithm symmetricAlgorithm =
-                AlghorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName);
+            var symmetricAlgorithm =
+                AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName);
 
-            ICryptoTransform iCryptoTransform = symmetricAlgorithm.CreateEncryptor();
-            MemoryStream memoryStream = new MemoryStream();
-            CryptoStream cryptoStream = new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write);
+            var iCryptoTransform = symmetricAlgorithm.CreateEncryptor();
+            var memoryStream = new MemoryStream();
+            var cryptoStream = new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write);
 
             cryptoStream.Write(textBytes, 0, textBytes.Length);
             cryptoStream.Close();
 
-            byte[] cipcherText = memoryStream.ToArray();
+            var cipcherText = memoryStream.ToArray();
             memoryStream.Close();
 
-            Console.WriteLine(Convert.ToBase64String(symmetricAlgorithm.Key).Length);
             File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.Key));
             File.AppendAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.IV));
 
@@ -43,7 +42,7 @@ namespace Chirikhin.Nsudotnet.Enigma
                 return outputFilename + ".key";
             }
 
-            return outputFilename.Substring(0, index) + ".key" + outputFilename.Substring(index);
+            return Concat(outputFilename.Substring(0, index), ".key", outputFilename.Substring(index));
         }
 
         public static void AppendAllBytes(string path, byte[] bytes)
