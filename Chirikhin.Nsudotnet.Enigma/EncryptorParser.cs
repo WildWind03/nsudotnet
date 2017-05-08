@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.String;
 
 namespace Chirikhin.Nsudotnet.Enigma
 {
     public static class EncryptorParser
     {
+        private static readonly int PROPER_COUNT_OF_ARGUMENTS = 4;
         public static EncryptorConfiguartion GetConfiguration(IReadOnlyList<string> args)
         {
-            if (null == args || args.Count != 4)
+            if (null == args || args.Count != PROPER_COUNT_OF_ARGUMENTS)
             {
-                throw new ArgumentException("args can not be null and must be equal to 4");
+                throw new ArgumentException(Concat("args can not be null and must be equal to ", PROPER_COUNT_OF_ARGUMENTS));
             }
 
             var inputFilename = args[1];

@@ -15,25 +15,29 @@ namespace Chirikhin.Nsudotnet.Enigma
             var iv = new byte[symmetricAlgorithm.BlockSize / 8];
 
             var keyAndIvString = File.ReadAllText(decryptorConfiguration.KeyFilename);
-            Console.WriteLine(keyAndIvString.Length + " " + key.Length + " " + iv.Length);
             var keyLengthInString = (int) ((float) key.Length / (key.Length + iv.Length) * keyAndIvString.Length);
             var keyString = keyAndIvString.Substring(0, keyLengthInString);
             var ivString = keyAndIvString.Substring(keyLengthInString);
-
-            Console.WriteLine(keyString.Length + " " + ivString.Length);
 
             var cipcheBytes = File.ReadAllBytes(decryptorConfiguration.InputFilename);
 
             symmetricAlgorithm.Key = Convert.FromBase64String(keyString);
             symmetricAlgorithm.IV = Convert.FromBase64String(ivString);
 
+            var iCryptoTransform = symmetricAlgorithm.CreateDecryptor();
+
             using (var mem = new MemoryStream())
             {
-                var crypto = new CryptoStream(mem, symmetricAlgorithm.CreateDecryptor(), CryptoStreamMode.Write);
+                var crypto = new CryptoStream(mem, iCryptoTransform, CryptoStreamMode.Write);
                 crypto.Write(cipcheBytes, 0, cipcheBytes.Length);
                 crypto.FlushFinalBlock();
-                File.WriteAllBytes(decryptorConfiguration.OutputFilename,mem.ToArray());
+                crypto.Dispose();
+
+                File.WriteAllBytes(decryptorConfiguration.OutputFilename, mem.ToArray());
             }
+
+            iCryptoTransform.Dispose();
+            symmetricAlgorithm.Dispose();
         }
     }
 }

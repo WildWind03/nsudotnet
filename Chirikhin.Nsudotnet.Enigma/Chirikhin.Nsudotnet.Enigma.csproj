@@ -49,7 +49,6 @@
     <Compile Include="EncryptorConfiguartion.cs" />
     <Compile Include="DecryptEncryptDetector.cs" />
     <Compile Include="DecryptorParser.cs" />
-    <Compile Include="EncryptionAlghorithmFactory.cs" />
     <Compile Include="Encryptor.cs" />
     <Compile Include="EncryptorParser.cs" />
     <Compile Include="ParserException.cs" />

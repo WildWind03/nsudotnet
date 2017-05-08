@@ -15,22 +15,21 @@ namespace Chirikhin.Nsudotnet.Enigma
                 AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName);
 
             var iCryptoTransform = symmetricAlgorithm.CreateEncryptor();
-            var memoryStream = new MemoryStream();
-            var cryptoStream = new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write);
 
-            cryptoStream.Write(textBytes, 0, textBytes.Length);
-            cryptoStream.Close();
+            using (var memoryStream = new MemoryStream())
+            {
+                var cryptoStream = new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write);
+                cryptoStream.Write(textBytes, 0, textBytes.Length);
+                cryptoStream.Dispose();
 
-            var cipcherText = memoryStream.ToArray();
-            memoryStream.Close();
+                File.WriteAllBytes(encryptorConfiguartion.OutputFilename, memoryStream.ToArray());
+            }
 
             File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.Key));
             File.AppendAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.IV));
 
             iCryptoTransform.Dispose();
-            symmetricAlgorithm.Clear();
-
-            File.WriteAllBytes(encryptorConfiguartion.OutputFilename, cipcherText);
+            symmetricAlgorithm.Dispose();
         }
 
         private static string GetKeyFilename(string outputFilename)

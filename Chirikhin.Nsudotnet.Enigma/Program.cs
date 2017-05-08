@@ -23,6 +23,8 @@ namespace Chirikhin.Nsudotnet.Enigma
                 Console.WriteLine(e.Message);
             }
 
+            Console.WriteLine("Press any button to continue");
+
             Console.ReadKey();
         }
     }
