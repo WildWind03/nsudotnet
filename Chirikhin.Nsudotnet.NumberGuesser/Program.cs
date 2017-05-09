@@ -61,7 +61,14 @@ namespace Chirikhin.Nsudotnet.NumberGuesser
 
                 try
                 {
-                    var typedNumberInteger = int.Parse(typedNumberString);
+                    int typedNumberInteger;
+                    var isParsed = int.TryParse(typedNumberString, out typedNumberInteger);
+
+                    if (!isParsed)
+                    {
+                        Console.WriteLine("You should type only numbers!");
+                        continue;
+                    }
 
                     if (typedNumberInteger == randomNumber)
                     {
