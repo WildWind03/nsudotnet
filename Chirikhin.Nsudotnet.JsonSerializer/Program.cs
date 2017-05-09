@@ -112,7 +112,11 @@ namespace JSONSerializer
                 foreach (var i in iDictionary.Keys)
                 {
                     var value = iDictionary[i];
-                    jsonDictionaryBuilder.Append(Concat("\"", i, "\":", ToJson(value), ","));
+                    jsonDictionaryBuilder.Append("\"");
+                    jsonDictionaryBuilder.Append(i);
+                    jsonDictionaryBuilder.Append("\":");
+                    jsonDictionaryBuilder.Append(ToJson(value));
+                    jsonDictionaryBuilder.Append(",");
                 }
 
                 jsonDictionaryBuilder.Append("}");
@@ -134,7 +138,8 @@ namespace JSONSerializer
                 {
                     if (i.GetType().IsSerializable)
                     {
-                        jsonEnumerableBuilder.Append(ToJson(i) + ",");
+                        jsonEnumerableBuilder.Append(ToJson(i));
+                        jsonEnumerableBuilder.Append(",");
                     }
                 }
 
@@ -169,7 +174,11 @@ namespace JSONSerializer
                     continue;
                 }
 
-                jsonBuilder.Append(Concat("\"", fieldInfo.Name, "\":", serializedField, ","));
+                jsonBuilder.Append("\"");
+                jsonBuilder.Append(fieldInfo.Name);
+                jsonBuilder.Append("\":");
+                jsonBuilder.Append(serializedField);
+                jsonBuilder.Append(",");
             }
 
             jsonBuilder.Append("]");
