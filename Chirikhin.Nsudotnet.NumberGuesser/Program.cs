@@ -17,31 +17,37 @@ namespace Chirikhin.Nsudotnet.NumberGuesser
             Console.WriteLine("Please, type your name");
             var userName = Console.ReadLine();
 
-            var offensiveComments = new string[CountOfComments];
+            string[] offensiveComments;
 
             if (userName != AuthoName)
             {
                 Console.WriteLine("What's a crappy name! Just type a number and pray that I'll come up with the same!");
 
-                offensiveComments[0] = "It's Roman Posokhin, isn't it? Even if it isn't, your smell and your creepy face make me suppose that your are his sibling! What are you talking?! You are {0}?! Then I'm sorry! You just a piece of crap, nothing more!";
-                offensiveComments[1] = "Come on, {0}! Don't be like Roman Posokhin!";
-                offensiveComments[2] = "Your 'intellegence' is your major flaw! {0}, you are from Omsk, aren't you?";
-                offensiveComments[3] = "{0}, are really so foolish?! It's incredible that you exist despite the evolution!";
+                offensiveComments = new[]
+                {
+                    "It's Roman Posokhin, isn't it? Even if it isn't, your smell and your creepy face make me suppose that your are his sibling! What are you talking?! You are {0}?! Then I'm sorry! You just a piece of crap, nothing more!",
+                    "Come on, {0}! Don't be like Roman Posokhin!",
+                     "Your 'intellegence' is your major flaw! {0}, you are from Omsk, aren't you?",
+                     "{0}, are really so foolish?! It's incredible that you exist despite the evolution!"
+                };
 
             } else
             {
                 Console.WriteLine("Welcome, brother! Glad to see you again! Please, type a number to start the game!");
-                offensiveComments[0] = "Hold on, {0}! Together we'll win!";
-                offensiveComments[1] = "{0}, just believe and you'll make it!";
-                offensiveComments[2] = "Don't worry, {0}! I feel that the victory is so near!";
-                offensiveComments[3] = "{0}, you are the smartest man I've ever met! So cool!";
+                offensiveComments = new[]
+                {
+                    "Hold on, {0}! Together we'll win!",
+                    "{0}, just believe and you'll make it!",
+                     "Don't worry, {0}! I feel that the victory is so near!",
+                    "{0}, you are the smartest man I've ever met! So cool!"
+            };
             }
 
             var failedAttempts = new int[MaxCoundOfFailedAttempts];
             var countOfFailedAttempts = 0;
             var random = new Random();
 
-            int randomNumber = random.Next() % MaxRandomNumber;
+            var randomNumber = random.Next(1, MaxRandomNumber);
 
             for (var k = 0; ; k++)
             {
@@ -94,7 +100,7 @@ namespace Chirikhin.Nsudotnet.NumberGuesser
 
                     if (0 == countOfFailedAttempts % (OffensiveCommentsFrequency - 1))
                     {
-                        Console.WriteLine(offensiveComments[random.Next() % CountOfComments], userName);
+                        Console.WriteLine(offensiveComments[random.Next(0, CountOfComments - 1)], userName);
                     }
                 }
                 catch (FormatException)
