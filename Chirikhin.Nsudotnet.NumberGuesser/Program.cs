@@ -85,7 +85,7 @@ namespace Chirikhin.Nsudotnet.NumberGuesser
                         Console.Write(" {0}({1})", randomNumber, "=");
 
                         Console.WriteLine();
-                        Console.WriteLine("Count of passed seconds: {0}", (DateTime.Now - startDateTime).Seconds);
+                        Console.WriteLine("Count of passed seconds: {0}", (DateTime.Now - startDateTime).TotalSeconds);
                         break;
                     }
                     if (countOfFailedAttempts >= MaxCoundOfFailedAttempts - 1)
@@ -105,7 +105,7 @@ namespace Chirikhin.Nsudotnet.NumberGuesser
                         Console.WriteLine("Your number is greater");
                     }
 
-                    if (0 == countOfFailedAttempts % (OffensiveCommentsFrequency - 1))
+                    if (countOfFailedAttempts % (OffensiveCommentsFrequency - 1) == 0)
                     {
                         Console.WriteLine(offensiveComments[random.Next(0, CountOfComments - 1)], userName);
                     }
