@@ -60,7 +60,6 @@ namespace JSONSerializer
 
     public static class JsonSerializer
     {
-
         private static bool IsNanOrInfinity(this object obj)
         {
             if (obj is double)
@@ -116,13 +115,14 @@ namespace JSONSerializer
                     jsonDictionaryBuilder.Append(Concat("\"", i, "\":", ToJson(value), ","));
                 }
 
-                var jsonEnumerableString = jsonDictionaryBuilder.ToString();
-                if (jsonEnumerableString[jsonEnumerableString.Length - 1] == ',')
+                jsonDictionaryBuilder.Append("}");
+
+                if (jsonDictionaryBuilder[jsonDictionaryBuilder.Length - 2] == ',')
                 {
-                    jsonEnumerableString = jsonEnumerableString.Substring(0, jsonEnumerableString.Length - 1);
+                    jsonDictionaryBuilder.Replace(',', ' ', jsonDictionaryBuilder.Length - 2, 1);
                 }
 
-                return jsonEnumerableString + "}";
+                return jsonDictionaryBuilder.ToString();
             }
 
             if (objectToSerialize is IEnumerable)
@@ -138,13 +138,14 @@ namespace JSONSerializer
                     }
                 }
 
-                var jsonEnumerableString = jsonEnumerableBuilder.ToString();
-                if (jsonEnumerableString[jsonEnumerableString.Length - 1] == ',')
+                jsonEnumerableBuilder.Append("]");
+
+                if (jsonEnumerableBuilder[jsonEnumerableBuilder.Length - 2] == ',')
                 {
-                    jsonEnumerableString = jsonEnumerableString.Substring(0, jsonEnumerableString.Length - 1);
+                    jsonEnumerableBuilder.Replace(',', ' ', jsonEnumerableBuilder.Length - 2, 1);
                 }
 
-                return jsonEnumerableString + "]";
+                return jsonEnumerableBuilder.ToString();
             }
 
             var jsonBuilder = new StringBuilder();
@@ -171,14 +172,14 @@ namespace JSONSerializer
                 jsonBuilder.Append(Concat("\"", fieldInfo.Name, "\":", serializedField, ","));
             }
 
-            var serializedObjects = jsonBuilder.ToString();
+            jsonBuilder.Append("]");
 
-            if (serializedObjects[serializedObjects.Length - 1] == ',')
+            if (jsonBuilder[jsonBuilder.Length - 2] == ',')
             {
-                serializedObjects = serializedObjects.Substring(0, serializedObjects.Length - 1);
+                jsonBuilder.Replace(',', ' ', jsonBuilder.Length - 2, 1);
             }
 
-            return serializedObjects + "}";
+            return jsonBuilder.ToString();
         }
     }
 }
