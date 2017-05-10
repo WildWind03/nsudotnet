@@ -11,25 +11,29 @@ namespace Chirikhin.Nsudotnet.Enigma
         {
             var textBytes = File.ReadAllBytes(encryptorConfiguartion.InputFilename);
 
-            var symmetricAlgorithm =
-                AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName);
-
-            var iCryptoTransform = symmetricAlgorithm.CreateEncryptor();
-
-            using (var memoryStream = new MemoryStream())
+            using (var symmetricAlgorithm =
+                AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName))
             {
-                var cryptoStream = new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write);
-                cryptoStream.Write(textBytes, 0, textBytes.Length);
-                cryptoStream.Dispose();
 
-                File.WriteAllBytes(encryptorConfiguartion.OutputFilename, memoryStream.ToArray());
+                using (var iCryptoTransform = symmetricAlgorithm.CreateEncryptor())
+                {
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        using (var cryptoStream =
+                           new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(textBytes, 0, textBytes.Length);
+                            File.WriteAllBytes(encryptorConfiguartion.OutputFilename, memoryStream.ToArray());
+                        }
+                    }
+
+                    File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename),
+                        Convert.ToBase64String(symmetricAlgorithm.Key));
+                    File.AppendAllText(GetKeyFilename(encryptorConfiguartion.InputFilename),
+                        Convert.ToBase64String(symmetricAlgorithm.IV));
+                }
             }
-
-            File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.Key));
-            File.AppendAllText(GetKeyFilename(encryptorConfiguartion.InputFilename), Convert.ToBase64String(symmetricAlgorithm.IV));
-
-            iCryptoTransform.Dispose();
-            symmetricAlgorithm.Dispose();
         }
 
         private static string GetKeyFilename(string outputFilename)
