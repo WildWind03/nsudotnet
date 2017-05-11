@@ -9,29 +9,28 @@ namespace Chirikhin.Nsudotnet.Enigma
     {
         public static void Encrypt(EncryptorConfiguartion encryptorConfiguartion)
         {
-            var textBytes = File.ReadAllBytes(encryptorConfiguartion.InputFilename);
-
-            using (var symmetricAlgorithm =
-                AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName))
+            using (var inputReader =
+                new FileStream(encryptorConfiguartion.InputFilename, FileMode.Open))
             {
-
-                using (var iCryptoTransform = symmetricAlgorithm.CreateEncryptor())
+                using (var outputWriter =
+                    new FileStream(encryptorConfiguartion.OutputFilename, FileMode.Create))
                 {
-
-                    using (var memoryStream = new MemoryStream())
+                    using (var symmetricAlgorithm =
+                        AlgorithmFactory.CreateAlghorithm(encryptorConfiguartion.AlgorithmName))
                     {
-                        using (var cryptoStream =
-                           new CryptoStream(memoryStream, iCryptoTransform, CryptoStreamMode.Write))
+
+                        using (var iCryptoTransform = symmetricAlgorithm.CreateEncryptor())
                         {
-                            cryptoStream.Write(textBytes, 0, textBytes.Length);
-                            File.WriteAllBytes(encryptorConfiguartion.OutputFilename, memoryStream.ToArray());
+                                using (var cryptoStream =
+                                    new CryptoStream(outputWriter, iCryptoTransform, CryptoStreamMode.Write))
+                                {
+                                    inputReader.CopyTo(cryptoStream);
+                                }
+
+                            File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename),
+                                $"{Convert.ToBase64String(symmetricAlgorithm.Key)}\n{Convert.ToBase64String(symmetricAlgorithm.IV)}");
                         }
                     }
-
-                    File.WriteAllText(GetKeyFilename(encryptorConfiguartion.InputFilename),
-                        Convert.ToBase64String(symmetricAlgorithm.Key));
-                    File.AppendAllText(GetKeyFilename(encryptorConfiguartion.InputFilename),
-                        Convert.ToBase64String(symmetricAlgorithm.IV));
                 }
             }
         }
@@ -46,14 +45,6 @@ namespace Chirikhin.Nsudotnet.Enigma
             }
 
             return Concat(outputFilename.Substring(0, index), ".key", outputFilename.Substring(index));
-        }
-
-        public static void AppendAllBytes(string path, byte[] bytes)
-        {
-            using (var stream = new FileStream(path, FileMode.Append))
-            {
-                stream.Write(bytes, 0, bytes.Length);
-            }
         }
     }
 }

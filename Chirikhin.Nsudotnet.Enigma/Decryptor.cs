@@ -8,34 +8,31 @@ namespace Chirikhin.Nsudotnet.Enigma
     {
         public static void Decrypt(DecryptorConfiguration decryptorConfiguration)
         {
-            using (var symmetricAlgorithm =
-                AlgorithmFactory.CreateAlghorithm(decryptorConfiguration.AlghorithmName))
+            using (var inputStream = new FileStream(decryptorConfiguration.InputFilename, FileMode.Open))
             {
-
-                var key = new byte[symmetricAlgorithm.KeySize / 8];
-                var iv = new byte[symmetricAlgorithm.BlockSize / 8];
-
-                var keyAndIvString = File.ReadAllText(decryptorConfiguration.KeyFilename);
-                var keyLengthInString = (int) ((float) key.Length / (key.Length + iv.Length) * keyAndIvString.Length);
-                var keyString = keyAndIvString.Substring(0, keyLengthInString);
-                var ivString = keyAndIvString.Substring(keyLengthInString);
-
-                var cipcheBytes = File.ReadAllBytes(decryptorConfiguration.InputFilename);
-
-                symmetricAlgorithm.Key = Convert.FromBase64String(keyString);
-                symmetricAlgorithm.IV = Convert.FromBase64String(ivString);
-
-                using (var iCryptoTransform = symmetricAlgorithm.CreateDecryptor())
+                using (var outputStream = new FileStream(decryptorConfiguration.OutputFilename, FileMode.Create))
                 {
-                    using (var mem = new MemoryStream())
+                    using (var symmetricAlgorithm =
+                        AlgorithmFactory.CreateAlghorithm(decryptorConfiguration.AlghorithmName))
                     {
-                        using (var crypto = new CryptoStream(mem, iCryptoTransform, CryptoStreamMode.Write))
+                        using (var keyStream =
+                            new StreamReader(new FileStream(decryptorConfiguration.KeyFilename, FileMode.Open)))
                         {
-                            crypto.Write(cipcheBytes, 0, cipcheBytes.Length);
-                            crypto.FlushFinalBlock();
+                            var keyString = keyStream.ReadLine();
+                            var ivString = keyStream.ReadLine();
+                            symmetricAlgorithm.Key = Convert.FromBase64String(keyString);
+                            symmetricAlgorithm.IV = Convert.FromBase64String(ivString);
                         }
 
-                        File.WriteAllBytes(decryptorConfiguration.OutputFilename, mem.ToArray());
+                        using (var iCryptoTransform = symmetricAlgorithm.CreateDecryptor())
+                        {
+                            using (var crypto =
+                                new CryptoStream(outputStream, iCryptoTransform, CryptoStreamMode.Write))
+                            {
+                                inputStream.CopyTo(crypto);
+                                crypto.FlushFinalBlock();
+                            }
+                        }
                     }
                 }
             }
