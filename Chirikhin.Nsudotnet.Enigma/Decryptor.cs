@@ -20,6 +20,12 @@ namespace Chirikhin.Nsudotnet.Enigma
                         {
                             var keyString = keyStream.ReadLine();
                             var ivString = keyStream.ReadLine();
+
+                            if (null == keyString || null == ivString)
+                            {
+                                throw new InvalidKeyIvFile("KeyIV file is not valid");
+                            }
+
                             symmetricAlgorithm.Key = Convert.FromBase64String(keyString);
                             symmetricAlgorithm.IV = Convert.FromBase64String(ivString);
                         }
