@@ -37,14 +37,7 @@ namespace Chirikhin.Nsudotnet.Enigma
 
         private static string GetKeyFilename(string outputFilename)
         {
-            var index = outputFilename.LastIndexOf(".", StringComparison.Ordinal);
-
-            if (-1 == index)
-            {
-                return outputFilename + ".key";
-            }
-
-            return Concat(outputFilename.Substring(0, index), ".key", outputFilename.Substring(index));
+            return outputFilename.Insert(outputFilename.Length - Path.GetExtension(outputFilename).Length, ".key");
         }
     }
 }
