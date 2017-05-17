@@ -112,7 +112,7 @@ namespace JSONSerializer
                 foreach (var i in iDictionary.Keys)
                 {
                     var value = iDictionary[i];
-                    jsonDictionaryBuilder.AppendFormat("{0}{1}{2}{3}{4}", "\"", i, "\":", ToJson(value), ",");
+                    jsonDictionaryBuilder.AppendFormat("\"{0}\":{1},", i, ToJson(value));
                 }
 
                 jsonDictionaryBuilder.Append("}");
@@ -134,7 +134,7 @@ namespace JSONSerializer
                 {
                     if (i.GetType().IsSerializable)
                     {
-                        jsonEnumerableBuilder.AppendFormat("{0}{1}", ToJson(i), ",");
+                        jsonEnumerableBuilder.AppendFormat("{0},", ToJson(i));
                     }
                 }
 
@@ -169,7 +169,7 @@ namespace JSONSerializer
                     continue;
                 }
 
-                jsonBuilder.AppendFormat("{0}{1}{2}{3}{4}", "\"", fieldInfo.Name, "\":", serializedField, ",");
+                jsonBuilder.AppendFormat("\"{0}\":{1},", fieldInfo.Name, serializedField);
             }
 
             jsonBuilder.Append("]");
