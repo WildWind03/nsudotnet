@@ -21,7 +21,7 @@ namespace Chirikhin.Nsudotnet.Enigma
                             var keyString = keyStream.ReadLine();
                             var ivString = keyStream.ReadLine();
 
-                            if (null == keyString || null == ivString)
+                            if (string.IsNullOrEmpty(keyString) || string.IsNullOrEmpty(ivString))
                             {
                                 throw new InvalidKeyIvFile("KeyIV file is not valid");
                             }

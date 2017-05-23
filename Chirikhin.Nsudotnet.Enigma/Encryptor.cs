@@ -37,7 +37,7 @@ namespace Chirikhin.Nsudotnet.Enigma
 
         private static string GetKeyFilename(string outputFilename)
         {
-            return outputFilename.Insert(outputFilename.Length - Path.GetExtension(outputFilename).Length, ".key");
+            return Path.ChangeExtension(outputFilename, $"key{Path.GetExtension(outputFilename)}");
         }
     }
 }
